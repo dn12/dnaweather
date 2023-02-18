@@ -1,0 +1,12 @@
+io/realm/DefaultRealmModuleMediator.java
+ io.realm.DefaultRealmModuleMediator
+io/realm/net_github_dn12_storage_model_CityWeatherRealmProxyInterface.java
+ io.realm.net_github_dn12_storage_model_CityWeatherRealmProxyInterface
+net/github/dn12/storage/BuildConfig.java
+ net.github.dn12.storage.BuildConfig
+io/realm/net_github_dn12_storage_model_CityWeatherRealmProxy.java
+ io.realm.net_github_dn12_storage_model_CityWeatherRealmProxy
+ io.realm.net_github_dn12_storage_model_CityWeatherRealmProxy$CityWeatherColumnInfo
+ io.realm.net_github_dn12_storage_model_CityWeatherRealmProxy$ClassNameHelper
+io/realm/DefaultRealmModule.java
+ io.realm.DefaultRealmModule

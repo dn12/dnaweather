@@ -1,0 +1,2 @@
+net/github/dn12/network/BuildConfig.java
+ net.github.dn12.network.BuildConfig
