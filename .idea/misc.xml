@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/DonnyAdiwilaga/Documents/GitHub/dnaweather/app/src/main/res/layout/fragment_city_weather.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/DonnyAdiwilaga/Documents/GitHub/dnaweather/app/src/main/res/layout/layout_city_weather.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/DonnyAdiwilaga/Documents/GitHub/witweather/app/src/main/res/layout/fragment_home.xml" value="0.358695652173913" />
         <entry key="..\:/Users/DonnyAdiwilaga/Documents/GitHub/witweather/app/src/main/res/layout/item_city.xml" value="0.358695652173913" />
         <entry key="..\:/Users/DonnyAdiwilaga/Documents/GitHub/witweather/app/src/main/res/layout/layout_home_current_city.xml" value="0.358695652173913" />

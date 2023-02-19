@@ -1,18 +1,4 @@
-/*
- * Copyright 2021 Horácio Flávio Comé Júnior
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package net.github.dn12.dnaweather.ui.city_weather
 
@@ -27,8 +13,10 @@ import com.google.android.material.snackbar.Snackbar
 import net.github.dn12.storage.model.CityWeather
 import net.github.dn12.dnaweather.R
 import net.github.dn12.dnaweather.databinding.FragmentCityWeatherBinding
+import net.github.dn12.dnaweather.databinding.LayoutCityWeatherBinding
 import net.github.dn12.dnaweather.util.gone
 import net.github.dn12.dnaweather.util.visible
+import net.github.dn12.storage.extensions.asDate
 import org.koin.android.ext.android.inject
 import kotlin.math.roundToInt
 
@@ -56,7 +44,10 @@ class CityWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-        binding.contentInclude.refreshButton.setOnClickListener { viewModel.refreshWeather() }
+        binding.refreshButton.setOnClickListener {
+            binding.progressBar.visible()
+            viewModel.refreshWeather()
+        }
     }
 
     override fun onStart() {
@@ -69,22 +60,36 @@ class CityWeatherFragment : Fragment() {
     }
 
     private fun getCityWeather(lat: Double = 0.0, lon:Double = 0.0) {
-        viewModel.getCityWeather(lat,lon).observe(viewLifecycleOwner) { bindWeather(it) }
+        viewModel.getCityWeather(lat,lon).observe(viewLifecycleOwner) {
+            binding.progressBar.gone()
+            bindWeather(it)
+        }
         viewModel.callResult.observe(viewLifecycleOwner) {}
     }
 
-    private fun bindWeather(cityWeather: CityWeather) {
-        val min = cityWeather.tempMin.roundToInt()
-        val max = cityWeather.tempMax.roundToInt()
-        binding.contentInclude.tempTextView.text = getString(R.string.temp_min_max, min, max)
-        binding.contentInclude.currentTempTextView.text = "${cityWeather.temp.roundToInt()}"
-        binding.contentInclude.mainTextView.text = cityWeather.weatherMain
-        binding.contentInclude.sunriseTextView.text = cityWeather.sysSunrise
-        val wind = cityWeather.windSpeed.roundToInt()
-        binding.contentInclude.windTextView.text = getString(R.string.wind_mps, wind)
-        val realFeel = cityWeather.feelsLike.roundToInt()
-        binding.contentInclude.reealFeelTextView.text = getString(R.string.temp, realFeel)
-        binding.contentInclude.root.visible()
+    private fun bindWeather(listCityWeather: List<CityWeather>) {
+
+        binding.contentInclude.removeAllViews()
+
+        listCityWeather.forEach { cityWeather->
+            val weatherBinding=LayoutCityWeatherBinding.inflate(layoutInflater)
+            weatherBinding.dateTextView.text= cityWeather.timeInMillis.asDate()
+            val min = cityWeather.tempMin.roundToInt()
+            val max = cityWeather.tempMax.roundToInt()
+            weatherBinding.tempTextView.text = getString(R.string.temp_min_max, min, max)
+            weatherBinding.currentTempTextView.text = "${cityWeather.temp.roundToInt()}"
+            weatherBinding.mainTextView.text = cityWeather.weatherMain
+            weatherBinding.sunriseTextView.text = cityWeather.sysSunrise
+            val wind = cityWeather.windSpeed.roundToInt()
+            weatherBinding.windTextView.text = getString(R.string.wind_mps, wind)
+            val realFeel = cityWeather.feelsLike.roundToInt()
+            weatherBinding.reealFeelTextView.text = getString(R.string.temp, realFeel)
+            weatherBinding.root.visible()
+            binding.contentInclude.addView(weatherBinding.root)
+
+        }
+
+
         binding.progressBar.gone()
     }
 }

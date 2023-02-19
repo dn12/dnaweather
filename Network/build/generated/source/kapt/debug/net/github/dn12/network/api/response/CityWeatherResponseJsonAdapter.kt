@@ -14,6 +14,7 @@ import com.squareup.moshi.`internal`.Util
 import java.lang.NullPointerException
 import java.lang.reflect.Constructor
 import kotlin.Int
+import kotlin.Long
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -26,7 +27,7 @@ public class CityWeatherResponseJsonAdapter(
   moshi: Moshi
 ) : JsonAdapter<CityWeatherResponse>() {
   private val options: JsonReader.Options = JsonReader.Options.of("id", "name", "weather", "main",
-      "wind", "sys")
+      "wind", "sys", "dt")
 
   private val intAdapter: JsonAdapter<Int> = moshi.adapter(Int::class.java, emptySet(), "id")
 
@@ -43,6 +44,8 @@ public class CityWeatherResponseJsonAdapter(
 
   private val sysAdapter: JsonAdapter<Sys> = moshi.adapter(Sys::class.java, emptySet(), "sys")
 
+  private val longAdapter: JsonAdapter<Long> = moshi.adapter(Long::class.java, emptySet(), "dt")
+
   @Volatile
   private var constructorRef: Constructor<CityWeatherResponse>? = null
 
@@ -56,6 +59,7 @@ public class CityWeatherResponseJsonAdapter(
     var main: Main? = null
     var wind: Wind? = null
     var sys: Sys? = null
+    var dt: Long? = 0L
     var mask0 = -1
     reader.beginObject()
     while (reader.hasNext()) {
@@ -91,6 +95,11 @@ public class CityWeatherResponseJsonAdapter(
           // $mask = $mask and (1 shl 5).inv()
           mask0 = mask0 and 0xffffffdf.toInt()
         }
+        6 -> {
+          dt = longAdapter.fromJson(reader) ?: throw Util.unexpectedNull("dt", "dt", reader)
+          // $mask = $mask and (1 shl 6).inv()
+          mask0 = mask0 and 0xffffffbf.toInt()
+        }
         -1 -> {
           // Unknown name, skip it.
           reader.skipName()
@@ -99,7 +108,7 @@ public class CityWeatherResponseJsonAdapter(
       }
     }
     reader.endObject()
-    if (mask0 == 0xffffffc0.toInt()) {
+    if (mask0 == 0xffffff80.toInt()) {
       // All parameters with defaults are set, invoke the constructor directly
       return  CityWeatherResponse(
           id = id as Int,
@@ -107,7 +116,8 @@ public class CityWeatherResponseJsonAdapter(
           weather = weather as MutableList<Weather>,
           main = main as Main,
           wind = wind as Wind,
-          sys = sys as Sys
+          sys = sys as Sys,
+          dt = dt as Long
       )
     } else {
       // Reflectively invoke the synthetic defaults constructor
@@ -115,8 +125,8 @@ public class CityWeatherResponseJsonAdapter(
       val localConstructor: Constructor<CityWeatherResponse> = this.constructorRef ?:
           CityWeatherResponse::class.java.getDeclaredConstructor(Int::class.javaPrimitiveType,
           String::class.java, MutableList::class.java, Main::class.java, Wind::class.java,
-          Sys::class.java, Int::class.javaPrimitiveType, Util.DEFAULT_CONSTRUCTOR_MARKER).also {
-          this.constructorRef = it }
+          Sys::class.java, Long::class.javaPrimitiveType, Int::class.javaPrimitiveType,
+          Util.DEFAULT_CONSTRUCTOR_MARKER).also { this.constructorRef = it }
       return localConstructor.newInstance(
           id,
           name,
@@ -124,6 +134,7 @@ public class CityWeatherResponseJsonAdapter(
           main,
           wind,
           sys,
+          dt,
           mask0,
           /* DefaultConstructorMarker */ null
       )
@@ -147,6 +158,8 @@ public class CityWeatherResponseJsonAdapter(
     windAdapter.toJson(writer, value_.wind)
     writer.name("sys")
     sysAdapter.toJson(writer, value_.sys)
+    writer.name("dt")
+    longAdapter.toJson(writer, value_.dt)
     writer.endObject()
   }
 }

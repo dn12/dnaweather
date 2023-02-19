@@ -8,5 +8,5 @@
 -keepnames class kotlin.jvm.internal.DefaultConstructorMarker
 -if class net.github.dn12.network.api.response.CityWeatherResponse
 -keepclassmembers class net.github.dn12.network.api.response.CityWeatherResponse {
-    public synthetic <init>(int,java.lang.String,java.util.List,net.github.dn12.network.api.response.Main,net.github.dn12.network.api.response.Wind,net.github.dn12.network.api.response.Sys,int,kotlin.jvm.internal.DefaultConstructorMarker);
+    public synthetic <init>(int,java.lang.String,java.util.List,net.github.dn12.network.api.response.Main,net.github.dn12.network.api.response.Wind,net.github.dn12.network.api.response.Sys,long,int,kotlin.jvm.internal.DefaultConstructorMarker);
 }
